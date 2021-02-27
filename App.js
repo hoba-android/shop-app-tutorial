@@ -1,21 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { useFonts } from "expo-font";
+
+import { Provider } from "react-redux";
+import { createStore, combineReducers } from "redux";
+
+import productsReducer from "./src/store/reducers/productReducer";
+import cartReducer from "./src/store/reducers/cartReducer";
+import orderReducer from "./src/store/reducers/orderReducer";
+import ShopNavigator from "./src/navigation/ShopNavigator";
+
+const rootReducer = combineReducers({
+  products: productsReducer,
+  cart: cartReducer,
+  orders: orderReducer,
+});
+
+const store = createStore(rootReducer);
 
 export default function App() {
+  const [loaded] = useFonts({
+    opensans: require("./assets/fonts/OpenSans-Regular.ttf"),
+    opensansbold: require("./assets/fonts/OpenSans-Bold.ttf"),
+  });
+
+  if (!loaded) {
+    return null;
+  }
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Provider store={store}>
+      <ShopNavigator />
+    </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
